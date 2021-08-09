@@ -1,9 +1,13 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group 'me.salmonmoses'
 version '1.0'
+
+sourceCompatibility = 11
+targetCompatibility = 11
 
 configurations {
     compileOnly {
