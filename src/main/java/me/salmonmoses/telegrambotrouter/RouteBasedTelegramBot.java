@@ -2,7 +2,9 @@ package me.salmonmoses.telegrambotrouter;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import me.salmonmoses.telegrambotrouter.route_managers.InMemoryTelegramChatStateManager;
 import me.salmonmoses.telegrambotrouter.route_managers.TelegramChatStateManager;
+import me.salmonmoses.telegrambotrouter.routes.MapBasedTelegramChatRouter;
 import me.salmonmoses.telegrambotrouter.routes.TelegramChatRoute;
 import me.salmonmoses.telegrambotrouter.routes.TelegramChatRouter;
 import me.salmonmoses.telegrambotrouter.util.BotUtils;
@@ -16,10 +18,10 @@ import java.util.Optional;
  */
 public abstract class RouteBasedTelegramBot extends TelegramLongPollingBot {
 	@Getter(AccessLevel.PROTECTED)
-	private TelegramChatRouter chatRouter;
+	private TelegramChatRouter chatRouter = new MapBasedTelegramChatRouter();
 
 	@Getter(AccessLevel.PROTECTED)
-	private TelegramChatStateManager chatStateManager;
+	private TelegramChatStateManager chatStateManager = new InMemoryTelegramChatStateManager();
 
 	@Override
 	public void onUpdateReceived(Update update) {
@@ -30,7 +32,11 @@ public abstract class RouteBasedTelegramBot extends TelegramLongPollingBot {
 			chatState = Optional.of(getChatRouter().getDefaultRoute());
 		}
 		TelegramChatRoute handler = getChatRouter().getRoute(chatState.get());
-		Optional<String> nextRoute = handler.onUpdate(update, this::execute);
-		nextRoute.ifPresent(s -> getChatStateManager().saveChatRoute(chatId, s));
+		Optional<String> nextRoute = handler.onUpdate(update, this);
+		nextRoute.ifPresent(s -> {
+			getChatStateManager().saveChatRoute(chatId, s);
+			handler.onExit(chatId, this);
+			chatRouter.getRoute(s).onEnter(chatId, this);
+		});
 	}
 }
