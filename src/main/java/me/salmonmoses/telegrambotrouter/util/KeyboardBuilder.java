@@ -41,8 +41,13 @@ public class KeyboardBuilder {
 		return this;
 	}
 
-	public KeyboardBuilder button(String btn) {
-		currentRow.add(btn);
+	public KeyboardBuilder button(String emoji, String desc) {
+		currentRow.add(emoji + " " + desc);
+		return this;
+	}
+
+	public KeyboardBuilder button(String desc) {
+		currentRow.add(desc);
 		return this;
 	}
 
