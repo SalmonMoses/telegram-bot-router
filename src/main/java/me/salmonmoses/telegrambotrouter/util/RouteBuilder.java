@@ -1,7 +1,7 @@
 package me.salmonmoses.telegrambotrouter.util;
 
 public class RouteBuilder {
-	private StringBuilder builder = new StringBuilder();
+	private final StringBuilder builder = new StringBuilder();
 	private boolean hasParams = false;
 
 	public RouteBuilder(String route) {
@@ -11,6 +11,7 @@ public class RouteBuilder {
 	public RouteBuilder withParam(String param, String value) {
 		if (!hasParams) {
 			builder.append("?");
+			hasParams = true;
 		} else {
 			builder.append("&");
 		}
@@ -20,7 +21,12 @@ public class RouteBuilder {
 		return this;
 	}
 
+	@Deprecated
 	public String get() {
+		return build();
+	}
+
+	public String build() {
 		return builder.toString();
 	}
 }

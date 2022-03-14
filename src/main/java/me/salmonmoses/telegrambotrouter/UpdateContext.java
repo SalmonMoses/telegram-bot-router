@@ -1,5 +1,7 @@
 package me.salmonmoses.telegrambotrouter;
 
+import lombok.Getter;
+import me.salmonmoses.telegrambotrouter.util.BotUtils;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
@@ -8,15 +10,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UpdateContext {
-	private Update update;
-	private AbsSender executor;
-	private String route;
+	@Getter
+	private final Update update;
+	@Getter
+	private final AbsSender executor;
+	@Getter
+	private final String route;
+	@Getter
+	private final long chatId;
 	private Map<String, String> params;
 
 	protected UpdateContext(Update update, AbsSender executor, String route) {
 		this.update = update;
 		this.executor = executor;
 		this.route = route;
+		this.chatId = BotUtils.getChatId(this.update);
 	}
 
 	public Map<String, String> getRouteParams() {
@@ -37,17 +45,5 @@ public class UpdateContext {
 		}
 		params = routeParams;
 		return params;
-	}
-
-	public Update getUpdate() {
-		return update;
-	}
-
-	public AbsSender getExecutor() {
-		return executor;
-	}
-
-	public String getRoute() {
-		return route;
 	}
 }
