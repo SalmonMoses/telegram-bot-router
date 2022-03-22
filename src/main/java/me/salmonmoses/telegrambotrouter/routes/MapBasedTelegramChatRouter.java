@@ -26,6 +26,11 @@ public class MapBasedTelegramChatRouter implements TelegramChatRouter {
         return defaultRoute;
     }
 
+    @Override
+    public TelegramChatRoute getFallbackRouteHandler() {
+        return new DefaultTelegramChatRoute();
+    }
+
     public MapBasedTelegramChatRouter defaultRoute(String route) {
         defaultRoute = route;
         return this;
