@@ -51,7 +51,8 @@ public abstract class RouteBasedTelegramBot extends TelegramLongPollingBot {
 		nextRoute.ifPresent(s -> {
 			getChatStateManager().saveChatRoute(chatId, s);
 			handler.onExit(context);
-			getChatRouter().getRoute(s.split("\\?")[0]).onEnter(context);
+			UpdateContext newContext = new UpdateContext(update, this, s);
+			getChatRouter().getRoute(s.split("\\?")[0]).onEnter(newContext);
 		});
 	}
 }
