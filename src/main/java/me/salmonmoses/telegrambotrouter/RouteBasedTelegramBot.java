@@ -18,22 +18,27 @@ import java.util.Optional;
  */
 public abstract class RouteBasedTelegramBot extends TelegramLongPollingBot {
 	@Getter(AccessLevel.PROTECTED)
-	private TelegramChatRouter chatRouter = new MapBasedTelegramChatRouter();
+	private final TelegramChatRouter chatRouter = new MapBasedTelegramChatRouter();
 
 	@Getter(AccessLevel.PROTECTED)
-	private TelegramChatStateManager chatStateManager = new InMemoryTelegramChatStateManager();
+	private final TelegramChatStateManager chatStateManager = new InMemoryTelegramChatStateManager();
 
 	@Override
 	public void onUpdateReceived(Update update) {
 		final Long chatId = BotUtils.getChatId(update);
 		Optional<String> chatState = getChatStateManager().getChatRoute(chatId);
+		boolean isFirstMessage = false;
 		if (chatState.isEmpty()) {
 			getChatStateManager().saveChatRoute(chatId, getChatRouter().getDefaultRoute());
 			chatState = Optional.of(getChatRouter().getDefaultRoute());
+			isFirstMessage = true;
 		}
 		TelegramChatRoute handler = getChatRouter().getRoute(chatState.get().split("\\?")[0]);
 		UpdateContext context = new UpdateContext(update, this, chatState.get());
 		Optional<String> nextRoute = Optional.empty();
+		if (isFirstMessage) {
+			handler.onEnter(context);
+		}
 		try {
 			nextRoute = handler.onUpdate(context);
 		} catch (TelegramRouteHandlingFailedException e) {
@@ -45,8 +50,8 @@ public abstract class RouteBasedTelegramBot extends TelegramLongPollingBot {
 		}
 		nextRoute.ifPresent(s -> {
 			getChatStateManager().saveChatRoute(chatId, s);
-			handler.onExit(chatId, this);
-			getChatRouter().getRoute(s.split("\\?")[0]).onEnter(chatId, this);
+			handler.onExit(context);
+			getChatRouter().getRoute(s.split("\\?")[0]).onEnter(context);
 		});
 	}
 }

@@ -1,10 +1,7 @@
 package me.salmonmoses.telegrambotrouter.routes;
 
-import me.salmonmoses.telegrambotrouter.TelegramApiMethodExecutor;
 import me.salmonmoses.telegrambotrouter.TelegramRouteHandlingFailedException;
 import me.salmonmoses.telegrambotrouter.UpdateContext;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.Optional;
 
@@ -12,14 +9,28 @@ import java.util.Optional;
  *
  */
 public interface TelegramChatRoute {
-	default void onEnter(long chatId, AbsSender executor) {}
+	/**
+	 * This method is called when user enters this route after being redirected or when using bot for the first time.
+	 *
+	 * @param context Object that contains all information about update
+	 */
+	default void onEnter(UpdateContext context) {
+	}
 
 	/**
 	 * This method is called when receiving updates via GetUpdates method
+	 *
 	 * @param context Object that contains all information about update
 	 * @return Next route name or Optional.empty() if route doesn't need to be changed.
 	 */
 	Optional<String> onUpdate(UpdateContext context) throws TelegramRouteHandlingFailedException;
 
-	default void onExit(long chatId, AbsSender executor) {}
+	/**
+	 * This method is called before redirecting user to the new route (but after calling saveState from
+	 * ChatStateManager)
+	 *
+	 * @param context Object that contains all information about update
+	 */
+	default void onExit(UpdateContext context) {
+	}
 }
