@@ -12,7 +12,7 @@ public class KeyboardBuilder {
 	private boolean selective = false;
 	private String inputFieldPlaceholder = null;
 
-	private ArrayList<KeyboardRow> rows = new ArrayList<>();
+	private final ArrayList<KeyboardRow> rows = new ArrayList<>();
 	private KeyboardRow currentRow = new KeyboardRow();
 
 	public KeyboardBuilder resize() {

@@ -1,5 +1,6 @@
 package me.salmonmoses.telegrambotrouter.route_managers;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 /**
@@ -11,7 +12,7 @@ public interface TelegramChatStateManager {
 	 * @param chatId chat ID of bot and user
 	 * @return current user's route or Optional.empty() if user doesn't have saved route yet.
 	 */
-	Optional<String> getChatRoute(long chatId);
+	@NotNull Optional<String> getChatRoute(long chatId);
 
 	/**
 	 * Saves current user's route for getting it later

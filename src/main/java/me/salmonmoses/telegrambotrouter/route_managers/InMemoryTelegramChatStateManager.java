@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.WeakHashMap;
 
 public class InMemoryTelegramChatStateManager implements TelegramChatStateManager {
-	private WeakHashMap<Long, String> states = new WeakHashMap<>();
+	private final WeakHashMap<Long, String> states = new WeakHashMap<>();
 
 	@Override
 	public Optional<String> getChatRoute(long chatId) {

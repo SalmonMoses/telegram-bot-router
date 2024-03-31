@@ -3,6 +3,7 @@ package me.salmonmoses.telegrambotrouter.routes;
 import me.salmonmoses.telegrambotrouter.TelegramRouteHandlingFailedException;
 import me.salmonmoses.telegrambotrouter.UpdateContext;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 /**
@@ -23,7 +24,7 @@ public interface TelegramChatRoute {
 	 * @param context Object that contains all information about update
 	 * @return Next route name or Optional.empty() if route doesn't need to be changed.
 	 */
-	Optional<String> onUpdate(UpdateContext context) throws TelegramRouteHandlingFailedException;
+	@NotNull Optional<String> onUpdate(UpdateContext context) throws TelegramRouteHandlingFailedException;
 
 	/**
 	 * This method is called before redirecting user to the new route (but after calling saveState from
